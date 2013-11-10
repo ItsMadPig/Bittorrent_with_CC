@@ -7,5 +7,5 @@ test cases:
      process_udp.c 	- Tested process inbound/outbound GET request
      list.c		- Tested enlist and delist
 
-
+Also test parallel sending and receiving under SPIFFY, one-to-one transmition without SIFFY. All works.
      
