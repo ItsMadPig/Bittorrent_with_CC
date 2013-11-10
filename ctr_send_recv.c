@@ -146,7 +146,7 @@ int check_cong_wnd_timeout (struct data_wnd_t *wnd, int sock) {
     count = wnd->last_packet_sent - wnd->last_packet_acked;
     assert(count >= 0);
 
-    printf("#packets in cong_wnd to checkt tmeout:%d\n", count);
+    //printf("#packets in cong_wnd to checkt tmeout:%d\n", count);
     
     // check if done
     if (wnd->last_packet_acked == wnd->packet_list->length)
@@ -161,10 +161,10 @@ int check_cong_wnd_timeout (struct data_wnd_t *wnd, int sock) {
 	assert(info != NULL);
 	
 	time(&cur_time);
-	printf("cur_time:%ld, infotime:%ld\n", cur_time, info->time);
+	//printf("cur_time:%ld, infotime:%ld\n", cur_time, info->time);
 	time_diff = difftime(cur_time, info->time);
 	if (time_diff > TIMEOUT) {
-	    printf("check_cong_wnd_timeout: time_diff=%ld, timeout, resend\n", time_diff);
+	    //printf("check_cong_wnd_timeout: time_diff=%ld, timeout, resend\n", time_diff);
 	    timeout_count++;
 
 	    general_enlist(info);
@@ -178,7 +178,7 @@ int check_cong_wnd_timeout (struct data_wnd_t *wnd, int sock) {
     }
 
     if (count > 0 && timeout_count == count) {
-	printf("!!!!!!timeout_cout=count=%d, resend immediately\n", count);
+	//printf("!!!!!!timeout_cout=count=%d, resend immediately\n", count);
 
 	ite = list_ind_ite(wnd->packet_list, wnd->last_packet_acked-1+1); //-1+1
 	for (i = 0; i < count; i++) {
