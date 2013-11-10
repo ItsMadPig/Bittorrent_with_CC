@@ -1,0 +1,1 @@
+1. Cp1 code does not check the value of some headers, like magic number, version, type.

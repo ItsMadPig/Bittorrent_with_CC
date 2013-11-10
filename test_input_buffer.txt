@@ -1,0 +1,3 @@
+GET B.chunks newB.tar
+GET A.chunks newA.tar
+GET C.chuXXX

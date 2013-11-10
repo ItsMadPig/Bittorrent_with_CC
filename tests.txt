@@ -1,0 +1,11 @@
+All unit tests are contained in each .c file itself
+After building the code, run corresponding test_* binary files to check the test results
+
+test cases:
+     ctr_send_recv.c	- Tested processing duplicated acks, send and received packets
+     packet.c		- Tested making WHOHAS packet, DATA packet
+     process_udp.c 	- Tested process inbound/outbound GET request
+     list.c		- Tested enlist and delist
+
+
+     
