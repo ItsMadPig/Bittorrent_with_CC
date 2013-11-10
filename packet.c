@@ -994,13 +994,21 @@ uint8 *fetch_data(char *chunk_file, int hash_id) {
 	return NULL;
     }
     
+    /*
     if ((path_p = strstr(path_buf, "./")) == NULL) {
 	DEBUG_PERROR("Error! fetch_data, strchr\n");
 	return NULL;
+	}*/
+    if ((path_p = strstr(path_buf, "File:")) == NULL) {
+	printf("Error! C.masterchunks file has wrong path format\n");
+	return NULL;
     }
+    path_p += strlen("File:");
+    while(*path_p == ' ')
+	path_p++;
+
     tmp = strchr(path_p, '\n');
     *tmp = '\0';
-    path_p += 2;
     
     DPRINTF(DEBUG_PACKET, "fetch_data: data_file:%s\n", path_p);
 

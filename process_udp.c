@@ -310,6 +310,11 @@ struct list_t *process_inbound_DATA(struct packet_info_t *info, struct GET_reque
 
     struct list_t *list = NULL;
     int expec_num = 0;
+
+    // already done
+    if (GET_req->slot_list->length == 0)
+	return NULL;
+    
     expec_num = enlist_DATA_info(info, GET_req);
 
     list = make_ACK_info(expec_num-1, info->peer_list);
@@ -378,6 +383,9 @@ int adjust_data_wnd(struct data_wnd_t *wnd) {
     // update last_sent 
     if (wnd->last_packet_sent > wnd->last_packet_avai)
 	wnd->last_packet_sent = wnd->last_packet_avai;
+    
+    if (wnd->last_packet_sent <= wnd->last_packet_acked)
+	wnd->last_packet_acked = wnd->last_packet_sent;
     
     // double check
     assert(wnd->last_packet_acked <= wnd->last_packet_sent);

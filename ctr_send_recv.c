@@ -70,7 +70,7 @@ void init_flow_wnd(struct flow_wnd_t **wnd) {
     init_list(&(*wnd)->packet_list);
     (*wnd)->last_packet_read = 0; 
     (*wnd)->next_packet_expec = 1; // in initial state, next epxec is 0th packet
-    (*wnd)->last_packet_recv = 0;
+    (*wnd)->last_packet_recv = INIT_SSTHRESH;
 
     (*wnd)->size = INIT_SSTHRESH;
 
@@ -629,7 +629,7 @@ int enlist_DATA_info(struct packet_info_t *info, struct GET_request_t *GET_req){
     int found = 0;
     struct slot_t *slot = NULL;
     
-    bt_peer_t *src_peer = NULL;
+    bt_peer_t *src_peer = NULL;    
 
     assert(info->peer_list != NULL);
     src_peer = list_ind(info->peer_list, 0);
@@ -647,7 +647,7 @@ int enlist_DATA_info(struct packet_info_t *info, struct GET_request_t *GET_req){
 	if (slot->status != DOWNLOADING) // only find downloading slot
 	    continue;
 	
-	printf("%d, %d\n", slot->selected_peer->id, src_peer->id);
+	printf("slot_selected_peer:%d, packet_from_peer:%d\n", slot->selected_peer->id, src_peer->id);
 	if (slot->selected_peer->id == src_peer->id) {
 	    DPRINTF(DEBUG_CTR, "enlist_DATA_info: inbound DATA finds matching slot_%d with peer_id=%d\n", ind, src_peer->id);
 	    found = 1;
@@ -691,6 +691,9 @@ int enlist_DATA_info(struct packet_info_t *info, struct GET_request_t *GET_req){
 	DPRINTF(DEBUG_CTR, "enlist_DATA_info: before updating, last_packet_recv:%d, next_expec%d\n", flow_wnd->last_packet_recv, flow_wnd->next_packet_expec);
 
 	update_flow_wnd(flow_wnd);
+	// weird
+	if (flow_wnd->next_packet_expec == info->seq_num)
+	    flow_wnd->next_packet_expec += 1;
 
 	DPRINTF(DEBUG_CTR, "enlist_DATA_info: after updating, last_packet_recv:%d, next_expec%d\n", flow_wnd->last_packet_recv, flow_wnd->next_packet_expec);
     
@@ -721,7 +724,8 @@ void update_flow_wnd(struct flow_wnd_t *wnd) {
     wnd->next_packet_expec = new_expec;    // new_expec might still be 1
     
     // update last_pck_recv
-    new_recv = new_expec + INIT_WND_SIZE - 1;
+    //new_recv = new_expec + INIT_WND_SIZE - 1;
+    new_recv = new_expec + INIT_SSTHRESH - 1;
     more = new_recv - wnd->last_packet_recv;
 
     wnd->last_packet_recv = new_recv;
